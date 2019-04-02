@@ -18,6 +18,8 @@ class TodoListViewController: SwipeTableViewController {
     
     let realm = try! Realm()
     
+    var selectedIndexPath: IndexPath?
+    
     var selectedCategory : Category? {
         didSet {
             loadItems()
@@ -89,6 +91,7 @@ class TodoListViewController: SwipeTableViewController {
     
     //MARK - TableView Delegate Methods
     
+    
     //TODO - Declare textFieldDidSelectRowAt:
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -159,17 +162,99 @@ class TodoListViewController: SwipeTableViewController {
         tableView.reloadData()
     }
     
+    //TODO: - swipe left to delete item
+    
     override func updateModel(at indexPath: IndexPath) {
         if let item = todoItems?[indexPath.row] {
             do {
                 try realm.write {
+                    let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                    let url = path.appendingPathComponent(item.voiceURL).path
                     realm.delete(item)
+                    deleteFile(url: url)
                 }
             } catch {
                 print ("Error delete item, \(error)")
             }
         }
     }
+    
+    //TODO: delete record file when item is deleted
+    func deleteFile(url: String) {
+        do {
+            let fileManager = FileManager.default
+            if fileManager.fileExists(atPath: url) {
+                // Delete file
+                try fileManager.removeItem(atPath: url)
+            } else {
+                print("File does not exist at url \(url)")
+            }
+        }
+        catch let error as NSError {
+            print("An error took place: \(error)")
+        }
+    }
+    
+    //TODO: update content of item
+    
+    override func updateContent(at indexPath: IndexPath) {
+        if let item = todoItems?[indexPath.row] {
+            var textField = UITextField()
+            
+            let alert = UIAlertController(title: "Update todo item", message: "", preferredStyle: .alert)
+            
+            let action = UIAlertAction(title: "Update item", style: .default) { (action) in
+                //what will happen once user clicks the update
+                    do {
+                        try self.realm.write {
+                            item.title = textField.text!
+                            self.tableView.reloadData()
+                        }
+                    } catch {
+                        print ("Error saving new items, \(error)")
+                    }
+                }
+            
+            alert.addTextField { (alertTextField) in
+                alertTextField.placeholder = "Update item"
+                textField = alertTextField
+            }
+            
+            alert.addAction(action)
+            
+            present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    //TODO: swipe right to record voice
+    override func recordVoice(at indexPath: IndexPath) {
+        self.selectedIndexPath = indexPath
+//        print(self.selectedIndexPath)
+        performSegue(withIdentifier: "gotoRecord", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! RecordViewController
+//        print(self.selectedIndexPath)
+        if let indexPath = self.selectedIndexPath {
+            if todoItems?[indexPath.row].voiceURL != "" {
+                destinationVC.fileName = todoItems?[indexPath.row].voiceURL
+                destinationVC.check = true
+            } else {
+                do {
+                    try realm.write {
+                        todoItems?[indexPath.row].voiceURL = "audio\(UUID().uuidString).m4a"
+                        destinationVC.fileName = todoItems?[indexPath.row].voiceURL
+                        destinationVC.check = false
+                    }
+                } catch {
+                    print ("Error assign voice url, \(error)")
+                }
+            }
+        }
+    }
+    
+    
 }
 
 

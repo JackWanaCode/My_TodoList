@@ -10,6 +10,8 @@ import UIKit
 import SwipeCellKit
 
 class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegate {
+    
+    var orient: SwipeActionsOrientation = .right
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,29 +33,57 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
-        guard orientation == .right else { return nil }
         
-        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
-            // handle action by updating model with deletion
-             self.updateModel(at: indexPath)
+        orient = orientation
+        
+        if orientation == .right {
+        
+            let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+                // handle action by updating model with deletion
+                 self.updateModel(at: indexPath)
+                
+            }
             
+            // customize the action appearance
+            deleteAction.image = UIImage(named: "delete-icon")
+            
+            return [deleteAction]
+            
+        } else {
+            let recordAction = SwipeAction(style: .default, title: "Record") { (action, indexPath) in
+                self.recordVoice(at: indexPath)
+            }
+            recordAction.backgroundColor = UIColor(hexString: "CAF7FO")
+            recordAction.textColor = UIColor(hexString: "000000")
+            let updateContent = SwipeAction(style: .default, title: "Update") { (action, indexPath) in
+                self.updateContent(at: indexPath)
+            }
+            updateContent.backgroundColor = UIColor(hexString: "FF64FF")
+            updateContent.textColor = UIColor(hexString: "000000")
+            return [recordAction, updateContent]
         }
-        
-        // customize the action appearance
-        deleteAction.image = UIImage(named: "delete-icon")
-        
-        return [deleteAction]
     }
     
     func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeOptions {
+    
         var options = SwipeOptions()
-        options.expansionStyle = .destructive
+        if orient == .right{
+            options.expansionStyle = .destructive
+        } else {
+            options.expansionStyle = .selection
+        }
         return options
     }
 
     func updateModel(at indexPath: IndexPath) {
         //Update our data model.
-       
+    }
+    
+    func recordVoice(at indexPath: IndexPath) {
+        //Record voice.
+    }
+    func updateContent(at indexPath: IndexPath){
+        //Update Content
     }
 }
 

@@ -104,6 +104,37 @@ class CategoryViewController: SwipeTableViewController {
         }
     }
     
+    //TODO: update content of category
+    
+    override func updateContent(at indexPath: IndexPath) {
+        if let category = categories?[indexPath.row] {
+            var textField = UITextField()
+            
+            let alert = UIAlertController(title: "Update category content", message: "", preferredStyle: .alert)
+            
+            let action = UIAlertAction(title: "Update", style: .default) { (action) in
+                //what will happen once user clicks the update
+                do {
+                    try self.realm.write {
+                        category.name = textField.text!
+                        self.tableView.reloadData()
+                    }
+                } catch {
+                    print ("Error saving new items, \(error)")
+                }
+            }
+            
+            alert.addTextField { (alertTextField) in
+                alertTextField.placeholder = "Update category"
+                textField = alertTextField
+            }
+            
+            alert.addAction(action)
+            
+            present(alert, animated: true, completion: nil)
+        }
+    }
+    
     //MARK: - Add New Categories
     
     
