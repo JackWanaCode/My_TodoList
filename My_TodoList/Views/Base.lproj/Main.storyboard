@@ -89,7 +89,8 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="searchBar" destination="xdk-EN-Uyg" id="K2H-Yr-dQW"/>
+                      <outlet property="searchBar" destination="xdk-EN-Uyg" id="K2H-Yr-dQW"/>
+		      
                         <segue destination="3yv-wr-aH7" kind="show" identifier="gotoRecord" id="2mO-Pr-vBG"/>
                     </connections>
                 </tableViewController>

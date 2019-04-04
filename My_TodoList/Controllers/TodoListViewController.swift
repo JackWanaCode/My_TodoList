@@ -161,7 +161,7 @@ class TodoListViewController: SwipeTableViewController {
         
         tableView.reloadData()
     }
-    
+
     //TODO: - swipe left to delete item
     
     override func updateModel(at indexPath: IndexPath) {
@@ -172,6 +172,7 @@ class TodoListViewController: SwipeTableViewController {
                     let url = path.appendingPathComponent(item.voiceURL).path
                     realm.delete(item)
                     deleteFile(url: url)
+                    realm.delete(item)
                 }
             } catch {
                 print ("Error delete item, \(error)")
@@ -229,13 +230,11 @@ class TodoListViewController: SwipeTableViewController {
     //TODO: swipe right to record voice
     override func recordVoice(at indexPath: IndexPath) {
         self.selectedIndexPath = indexPath
-//        print(self.selectedIndexPath)
         performSegue(withIdentifier: "gotoRecord", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination as! RecordViewController
-//        print(self.selectedIndexPath)
         if let indexPath = self.selectedIndexPath {
             if todoItems?[indexPath.row].voiceURL != "" {
                 destinationVC.fileName = todoItems?[indexPath.row].voiceURL
@@ -253,8 +252,6 @@ class TodoListViewController: SwipeTableViewController {
             }
         }
     }
-    
-    
 }
 
 

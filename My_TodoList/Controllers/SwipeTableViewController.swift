@@ -46,7 +46,6 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
             
             // customize the action appearance
             deleteAction.image = UIImage(named: "delete-icon")
-            
             return [deleteAction]
             
         } else {
@@ -65,7 +64,6 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     }
     
     func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeOptions {
-    
         var options = SwipeOptions()
         if orient == .right{
             options.expansionStyle = .destructive
@@ -77,6 +75,7 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
 
     func updateModel(at indexPath: IndexPath) {
         //Update our data model.
+
     }
     
     func recordVoice(at indexPath: IndexPath) {

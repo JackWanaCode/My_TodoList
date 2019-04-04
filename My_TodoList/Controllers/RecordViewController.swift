@@ -39,6 +39,7 @@ class RecordViewController: UIViewController, AVAudioRecorderDelegate, AVAudioPl
         } else {
             playBTN.isEnabled = false
         }
+        
     }
     
     func getDocumentsDirectory() -> URL {
@@ -49,7 +50,6 @@ class RecordViewController: UIViewController, AVAudioRecorderDelegate, AVAudioPl
     func setupRecorder() {
         if fileName != nil {
             let voiceURL = getDocumentsDirectory().appendingPathComponent(fileName!)
-            print("setup Recorder \(voiceURL)")
             let recordSetting = [ AVFormatIDKey : kAudioFormatAppleLossless ,
                                   AVEncoderAudioQualityKey : AVAudioQuality.max.rawValue,
                                   AVEncoderBitRateKey : 320000,
@@ -68,7 +68,6 @@ class RecordViewController: UIViewController, AVAudioRecorderDelegate, AVAudioPl
     func setupPlayer() {
         if fileName != nil {
             let voiceURL = getDocumentsDirectory().appendingPathComponent(fileName!)
-            print("setup Player \(voiceURL)")
             do {
                 soundPlayer = try AVAudioPlayer(contentsOf: voiceURL)
                 soundPlayer.delegate = self
